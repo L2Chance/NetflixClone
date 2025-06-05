@@ -1,0 +1,41 @@
+@import "keen-slider/keen-slider.min.css";
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+body {
+  background-color: black;
+}
+
+.keen-slider {
+  width: 400px;
+}
+
+.keen-slider__slide {
+  width: 400px !important;
+}
+
+@theme {
+  --font-family-roboto: "Roboto", sans-serif;
+  --font-family-inter: "Inter", sans-serif;
+}
+
+@utility texto-semibold {
+  color: white;
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+@utility texto-bold {
+  color: white;
+  font-family: Inter, sans-serif;
+  font-weight: 700;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+@utility texto-light {
+  color: white;
+  font-family: Inter, sans-serif;
+  font-weight: 300;
+  text-shadow: 0.5px 0.5px 2px rgba(0, 0, 0, 0.5);
+}
