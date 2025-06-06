@@ -11,9 +11,7 @@ export default function Navbar() {
           <img src={netflixLogo} alt="Logo-Netflix" className="w-20 h-20" />
 
           <p className="text-xl font-family-roboto text-white">|</p>
-          <p className="text-xl font-family-roboto italic font-light text-white">
-            Perez Lautaro Ivan
-          </p>
+          <p className="text-2xl texto-light">Perez Lautaro Ivan</p>
         </section>
         {/*Sección derecha del Navbar*/}
         <section className="flex justify-center items-center gap-10">
