@@ -32,7 +32,9 @@ export default function ReproductorVideo({ onCerrar }: ReproductorVideoProps) {
     return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
-  const handleClickBarra = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleClickBarra = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     if (!barraRef.current) return;
     const rect = barraRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;

@@ -1,32 +1,31 @@
 interface PeliculaPrincipalCardProps {
+  idPelicula: number;
   onClick?: () => void;
   url: string;
   titulo: string;
-  isSelected?: boolean;
-}
-
-function peliculaSeleccionada(isSelected: boolean) {
-  if (isSelected) {
-    return "border-3 border-white scale-97";
-  } else {
-    return "";
-  }
+  onHover?: (coords: { id: number; x: number; y: number }) => void;
+  onLeave?: () => void;
 }
 
 export default function PrincipalPeliculaCard({
+  idPelicula,
   url,
   titulo,
   onClick,
-  isSelected = false,
+  onHover,
+  onLeave,
 }: PeliculaPrincipalCardProps) {
   return (
     <article
-      className={`min-w-[400px] cursor-pointer transition-transform duration-300 ${peliculaSeleccionada(
-        isSelected
-      )}`}
+      className="w-[260px] cursor-pointer transition-transform duration-300"
       onClick={onClick}
+      onMouseEnter={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        onHover?.({ id: idPelicula, x: rect.left, y: rect.top });
+      }}
+      onMouseLeave={onLeave}
     >
-      <img className="w-full h-60 object-cover" src={url} alt={titulo} />
+      <img className="w-full h-40 object-cover" src={url} alt={titulo} />
     </article>
   );
 }

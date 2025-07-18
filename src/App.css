@@ -1,17 +1,10 @@
 @import "keen-slider/keen-slider.min.css";
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
+@import "tailwindcss-animated";
 
 body {
-  background-color: black;
-}
-
-.keen-slider {
-  width: 400px;
-}
-
-.keen-slider__slide {
-  width: 400px !important;
+  background-color: #141414;
 }
 
 @theme {
@@ -38,4 +31,14 @@ body {
   font-family: Inter, sans-serif;
   font-weight: 300;
   text-shadow: 0.5px 0.5px 2px rgba(0, 0, 0, 0.5);
+}
+
+@utility tarjeta-hover {
+  @apply fixed z-[100] bg-gray-900 text-white p-4 rounded shadow-xl
+         transition-all duration-300 opacity-0 pointer-events-none
+         -translate-y-2;
+}
+
+@utility tarjeta-hover-activa {
+  @apply opacity-100 pointer-events-auto translate-y-0;
 }
