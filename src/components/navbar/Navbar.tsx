@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 type NavbarProps = {
   ocultar?: boolean;
+  onBuscar: (termino: string) => void;
 };
 
 export default function Navbar({ ocultar = false }: NavbarProps) {

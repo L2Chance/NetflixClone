@@ -21,9 +21,7 @@ function App() {
 
   return (
     <>
-      {!ocultarNavbar && (
-        <Navbar ocultar={ocultarNavbar} onBuscar={setTerminoBusqueda} />
-      )}
+      {!ocultarNavbar && <Navbar onBuscar={setTerminoBusqueda} />}
 
       <Routes>
         <Route path="/" element={<Home terminoBusqueda={terminoBusqueda} />} />

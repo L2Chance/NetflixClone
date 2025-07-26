@@ -1,0 +1,27 @@
+@import "keen-slider/keen-slider.min.css";
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+.tarjeta-hover {
+  position: fixed;
+  z-index: 100;
+  background-color: #1f2937;
+  color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-0.5rem);
+}
+
+.tarjeta-hover-activa {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+::-webkit-slider-thumb {
+  margin-top: 1px;
+}

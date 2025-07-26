@@ -3,7 +3,7 @@ import peliculas from "../recursos/peliculas";
 import CardListado from "../components/CardListado";
 
 const generosDestacados = [
-  "Todos", // <- agregado
+  "Todos",
   "Acción",
   "Aventura",
   "Comedia",
