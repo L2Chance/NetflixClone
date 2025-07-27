@@ -87,16 +87,16 @@ export default function Home({ terminoBusqueda }: HomeProps) {
     );
   });
 
-  const popularRef = useRef<null | { next: () => void; prev: () => void }>(
-    null
-  );
-  const belicoRef = useRef<null | { next: () => void; prev: () => void }>(null);
-  const romanceRef = useRef<null | { next: () => void; prev: () => void }>(
-    null
-  );
-  const animacionRef = useRef<null | { next: () => void; prev: () => void }>(
-    null
-  );
+  type SliderRef = {
+    next: () => void;
+    prev: () => void;
+    moveBy: (slides: number) => void;
+  };
+
+  const popularRef = useRef<SliderRef>(null);
+  const belicoRef = useRef<SliderRef>(null);
+  const romanceRef = useRef<SliderRef>(null);
+  const animacionRef = useRef<SliderRef>(null);
 
   const NavegacionSlider = ({
     onPrev,
@@ -176,7 +176,7 @@ export default function Home({ terminoBusqueda }: HomeProps) {
                   {titulo}
                 </h1>
                 <div className="relative">
-                  <ContenedorPeliculas>
+                  <ContenedorPeliculas ref={ref}>
                     {peliculas.filter(filtro).map((pelicula) => (
                       <PrincipalPeliculaCard
                         key={pelicula.id}
