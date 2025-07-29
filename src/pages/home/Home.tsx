@@ -6,6 +6,7 @@ import peliculas from "../../recursos/peliculas";
 import DescripcionPelicula from "./DescripcionPelicula";
 import ContenedorPeliculas from "../../components/ContenedorPeliculas";
 import ContenedorPeliculasBusqueda from "../../components/ContenedorPeliculasBusqueda";
+import BotonCirculo from "../../components/BotonCirculo";
 
 type HomeProps = {
   terminoBusqueda: string;
@@ -200,19 +201,17 @@ export default function Home({ terminoBusqueda }: HomeProps) {
         )}
       </div>
 
-      {/* Hover card */}
       {hoverPelicula && (
         <div
-          className={`absolute z-[100] w-[90vw] sm:w-[400px] rounded-lg overflow-hidden transition-all duration-500 ease-out ${
+          className={`absolute z-[100] w-[90vw] sm:w-[400px] rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-2xl ${
             isHoverVisible
               ? "opacity-100 scale-100"
-              : "opacity-0 scale-90 pointer-events-none"
+              : "opacity-0 scale-95 pointer-events-none"
           }`}
           style={{
             top: hoverPelicula.y,
             left: hoverPelicula.x,
-            backgroundColor: "transparent",
-            boxShadow: isHoverVisible ? "0 10px 40px rgba(0,0,0,0.9)" : "none",
+            backgroundColor: "#141414", // fondo oscuro estilo Netflix
           }}
           onMouseEnter={() => {
             if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
@@ -222,29 +221,36 @@ export default function Home({ terminoBusqueda }: HomeProps) {
         >
           {peliculaHover && (
             <>
+              {/* Imagen de portada */}
               <img
                 src={peliculaHover.imagen}
                 alt={peliculaHover.titulo}
                 className="w-full h-40 sm:h-56 object-cover"
               />
-              <div className="bg-gray-950 p-3 sm:p-4 text-white text-sm sm:text-base">
-                <h2 className="font-bold text-lg sm:text-xl mb-1">
+
+              {/* Contenido textual */}
+              <div className="p-4 text-white text-sm sm:text-base space-y-2">
+                {/* Título */}
+                <h2 className="font-bold text-lg sm:text-xl">
                   {peliculaHover.titulo}
                 </h2>
-                <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
-                  <span className="border border-white rounded px-2 text-xs font-semibold">
-                    16+
+
+                <BotonCirculo></BotonCirculo>
+
+                {/* Fila de etiquetas */}
+                <div className="flex items-center gap-2 flex-wrap text-xs font-medium">
+                  <span className="bg-white text-black px-2 py-0.5 rounded">
+                    10+
                   </span>
-                  <span className="text-xs opacity-70">{"2 temporadas"}</span>
-                  <span className="text-xs border border-white rounded px-1">
-                    HD
+                  <span className="opacity-70">
+                    {peliculaHover.duracion ?? "1h 39min"}
                   </span>
+                  <span className="border border-white px-1 rounded">HD</span>
                 </div>
-                <p className="text-xs sm:text-sm mb-1 italic opacity-70">
+
+                {/* Géneros */}
+                <p className="italic opacity-70 text-xs sm:text-sm">
                   {peliculaHover.generos.join(" · ")}
-                </p>
-                <p className="text-xs sm:text-sm">
-                  {peliculaHover.sinopsis.slice(0, 140)}...
                 </p>
               </div>
             </>
