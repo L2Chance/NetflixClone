@@ -1,25 +1,8 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import peliculas from "../recursos/peliculas";
+import { movieService } from "../recursos/service";
+import type { Pelicula } from "../recursos/peliculas";
 import CardListado from "../components/CardListado";
-
-// Definición del tipo Pelicula
-type Pelicula = {
-  id: number;
-  titulo: string;
-  anio: string;
-  director: string;
-  duracion: string;
-  sinopsis: string;
-  generos: string[];
-  cover: string;
-  imagen: string;
-  destacada?: boolean;
-  popular: boolean;
-  puntuacion: number;
-  imagenPresentacion: string;
-  trailer: string;
-};
 
 export default function Busqueda() {
   const [searchParams] = useSearchParams();
@@ -27,12 +10,28 @@ export default function Busqueda() {
   const query = searchParams.get("query")?.toLowerCase() || "";
 
   const [resultados, setResultados] = useState<Pelicula[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const filtradas = peliculas.filter((pelicula: Pelicula) =>
-      pelicula.titulo.toLowerCase().includes(query)
-    );
-    setResultados(filtradas);
+    const fetchResultados = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const todasLasPeliculas = await movieService.getAllMovies();
+        const filtradas = todasLasPeliculas.filter((pelicula: Pelicula) =>
+          pelicula.titulo.toLowerCase().includes(query)
+        );
+        setResultados(filtradas);
+      } catch (err) {
+        setError("Error al cargar los resultados de la búsqueda.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchResultados();
   }, [query]);
 
   return (
@@ -43,14 +42,22 @@ export default function Busqueda() {
           Resultados para: "{query}"
         </h1>
 
-        {/* Si no hay resultados */}
-        {resultados.length === 0 && (
+        {isLoading && (
+          <div className="text-center text-lg text-gray-400">
+            Cargando resultados...
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center text-lg text-red-500">{error}</div>
+        )}
+
+        {!isLoading && !error && resultados.length === 0 && (
           <div className="text-center text-lg text-gray-400 animate-fade-up animate-ease-in-out">
             No se encontraron películas con ese título.
           </div>
         )}
 
-        {/* Listado de resultados */}
         {resultados.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 animate-fade-up animate-ease-in-out">
             {resultados.map((pelicula) => (

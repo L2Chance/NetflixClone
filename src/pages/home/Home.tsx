@@ -1,29 +1,45 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { movieService } from "../../recursos/service";
 import PrincipalPeliculaCard from "../../components/PrincipalPeliculaCard";
 import BusquedaPeliculaCard from "../../components/BusquedaPeliculaCard";
-import peliculas from "../../recursos/peliculas";
 import DescripcionPelicula from "./DescripcionPelicula";
 import ContenedorPeliculas from "../../components/ContenedorPeliculas";
 import ContenedorPeliculasBusqueda from "../../components/ContenedorPeliculasBusqueda";
 import BotonCirculo from "../../components/BotonCirculo";
+import type { Pelicula } from "../../recursos/peliculas";
 
 type HomeProps = {
   terminoBusqueda: string;
-};
-
-type Pelicula = {
-  id: number;
-  titulo: string;
-  imagen: string;
-  generos: string[];
-  sinopsis: string;
 };
 
 export default function Home({ terminoBusqueda }: HomeProps) {
   const contenedorRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Obtener películas del servicio ---
+  useEffect(() => {
+    const fetchPeliculas = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await movieService.getAllMovies();
+        setPeliculas(data);
+      } catch (err) {
+        setError("No se pudieron cargar las películas.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPeliculas();
+  }, []);
+
+  // --- Lógica existente para el hover ---
   const [hoverPelicula, setHoverPelicula] = useState<{
     id: number;
     x: number;
@@ -88,6 +104,7 @@ export default function Home({ terminoBusqueda }: HomeProps) {
     );
   });
 
+  // --- Componentes y Refs existentes ---
   type SliderRef = {
     next: () => void;
     prev: () => void;
@@ -127,6 +144,17 @@ export default function Home({ terminoBusqueda }: HomeProps) {
   const peliculaHover = hoverPelicula
     ? peliculas.find((p) => p.id === hoverPelicula.id)
     : null;
+
+  // --- Renderizado de la UI ---
+  if (isLoading) {
+    return (
+      <div className="text-white text-center mt-20">Cargando películas...</div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center mt-20">{error}</div>;
+  }
 
   return (
     <div ref={contenedorRef} className="relative animate-fade">
@@ -211,7 +239,7 @@ export default function Home({ terminoBusqueda }: HomeProps) {
           style={{
             top: hoverPelicula.y,
             left: hoverPelicula.x,
-            backgroundColor: "#141414", // fondo oscuro estilo Netflix
+            backgroundColor: "#141414",
           }}
           onMouseEnter={() => {
             if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
@@ -221,23 +249,16 @@ export default function Home({ terminoBusqueda }: HomeProps) {
         >
           {peliculaHover && (
             <>
-              {/* Imagen de portada */}
               <img
                 src={peliculaHover.imagen}
                 alt={peliculaHover.titulo}
                 className="w-full h-40 sm:h-56 object-cover"
               />
-
-              {/* Contenido textual */}
               <div className="p-4 text-white text-sm sm:text-base space-y-2">
-                {/* Título */}
                 <h2 className="font-bold text-lg sm:text-xl">
                   {peliculaHover.titulo}
                 </h2>
-
                 <BotonCirculo></BotonCirculo>
-
-                {/* Fila de etiquetas */}
                 <div className="flex items-center gap-2 flex-wrap text-xs font-medium">
                   <span className="bg-white text-black px-2 py-0.5 rounded">
                     10+
@@ -247,8 +268,6 @@ export default function Home({ terminoBusqueda }: HomeProps) {
                   </span>
                   <span className="border border-white px-1 rounded">HD</span>
                 </div>
-
-                {/* Géneros */}
                 <p className="italic opacity-70 text-xs sm:text-sm">
                   {peliculaHover.generos.join(" · ")}
                 </p>
