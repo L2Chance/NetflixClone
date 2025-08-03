@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import peliculas from "../recursos/peliculas";
 import CardListado from "../components/CardListado";
+import { movieService } from "../recursos/service";
+import type { Pelicula } from "../recursos/peliculas";
 
 const generosDestacados = [
   "Todos",
@@ -18,7 +19,11 @@ const generosDestacados = [
 export default function Category() {
   const { genre } = useParams<{ genre: string }>();
   const navigate = useNavigate();
-  const genreLower = genre?.toLowerCase() ?? "";
+  const genreLower = genre?.toLowerCase() ?? "todos";
+
+  const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [paginaActual, setPaginaActual] = useState(1);
   const peliculasPorPagina = 10;
@@ -28,9 +33,27 @@ export default function Category() {
     setPaginaActual(1);
   }, [genre]);
 
-  // Filtrar películas
+  // Lógica para obtener las películas del servicio
+  useEffect(() => {
+    const fetchPeliculas = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await movieService.getAllMovies();
+        setPeliculas(data);
+      } catch (err) {
+        setError("No se pudieron cargar las películas.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPeliculas();
+  }, []);
+
+  // Filtrar películas en el frontend
   const peliculasFiltradas =
-    genreLower === "todos" || !genreLower
+    genreLower === "todos"
       ? peliculas
       : peliculas.filter((pelicula) =>
           pelicula.generos.some((g) => g.toLowerCase() === genreLower)
@@ -75,18 +98,30 @@ export default function Category() {
     </div>
   );
 
+  // Renderizado condicional
+  if (isLoading) {
+    return (
+      <div className="p-4 text-center text-white mt-20">
+        Cargando categorías...
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="p-4 text-center text-red-500 mt-20">{error}</div>;
+  }
+
   return (
     <>
       <div className="h-15"></div>
       <div className="min-h-screen text-white px-6 py-10 animate-fade-up animate-ease-in-out">
         <h1 className="text-4xl font-extrabold mb-6 tracking-wide">
-          {genreLower === "todos" || !genre
+          {genreLower === "todos"
             ? "Todas las películas"
             : `Categoría: ${genre}`}
         </h1>
 
         <div className="flex w-full">
-          {/* Botones de géneros */}
           <div className="flex flex-col w-[15%] gap-2 p-4 mb-10 animate-fade-up animate-ease-in-out">
             {generosDestacados.map((g) => (
               <button
@@ -104,14 +139,12 @@ export default function Category() {
           </div>
 
           <div className="w-[85%]">
-            {/* Mensaje si no hay películas */}
             {genre && peliculasFiltradas.length === 0 && (
               <div className="text-center text-lg text-gray-400 animate-fade-up animate-ease-in-out">
                 No se encontraron películas para la categoría "{genre}".
               </div>
             )}
 
-            {/* Listado de películas */}
             {peliculasPaginadas.length > 0 && (
               <div className="flex flex-wrap gap-3 justify-center">
                 {peliculasPaginadas.map((pelicula) => (
@@ -129,7 +162,6 @@ export default function Category() {
               </div>
             )}
 
-            {/* Paginador inferior */}
             {peliculasFiltradas.length > 0 && <Paginador />}
           </div>
         </div>

@@ -1,4 +1,21 @@
-const peliculas = [
+export interface Pelicula {
+  id: number;
+  titulo: string;
+  anio: string;
+  director: string;
+  duracion: string;
+  sinopsis: string;
+  generos: string[];
+  cover: string;
+  imagen: string;
+  destacada?: boolean;
+  popular: boolean;
+  puntuacion: number;
+  imagenPresentacion: string;
+  trailer: string;
+}
+
+const peliculas: Pelicula[] = [
   {
     id: 0,
     titulo: "Terminator",
@@ -931,5 +948,10 @@ const peliculas = [
     trailer: "https://www.youtube.com/embed/d96cjJhvlMA",
   },
 ];
+
+// Get next available ID
+export const getNextId = () => {
+  return Math.max(...peliculas.map((pelicula) => pelicula.id)) + 1;
+};
 
 export default peliculas;
