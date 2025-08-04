@@ -43,13 +43,20 @@ export default function CrearPelicula() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const target = e.target as HTMLInputElement;
-    const { name, value, type, checked } = target;
+    const { name, value, type } = e.target;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setForm((prev) => ({
+        ...prev,
+        [name]: checked,
+      }));
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleGenerosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,221 +72,184 @@ export default function CrearPelicula() {
 
   return (
     <>
-      <div className="h-15"></div>
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-xl mx-auto p-6 bg-white rounded shadow space-y-6"
-      >
-        <h2 className="text-2xl font-bold text-center">
-          Crear una Nueva Película
-        </h2>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="titulo">
-            Título
-          </label>
-          <input
-            type="text"
-            id="titulo"
-            name="titulo"
-            placeholder="Título"
-            value={form.titulo}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="anio">
-            Año
-          </label>
-          <input
-            type="text"
-            id="anio"
-            name="anio"
-            placeholder="Año"
-            value={form.anio}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="director">
-            Director
-          </label>
-          <input
-            type="text"
-            id="director"
-            name="director"
-            placeholder="Director"
-            value={form.director}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="duracion">
-            Duración
-          </label>
-          <input
-            type="text"
-            id="duracion"
-            name="duracion"
-            placeholder="Duración"
-            value={form.duracion}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="sinopsis">
-            Sinopsis
-          </label>
-          <textarea
-            id="sinopsis"
-            name="sinopsis"
-            placeholder="Sinopsis"
-            value={form.sinopsis}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2 resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="generos">
-            Géneros (separados por coma)
-          </label>
-          <input
-            type="text"
-            id="generos"
-            name="generos"
-            placeholder="Acción, Comedia, Drama"
-            value={form.generos.join(", ")}
-            onChange={handleGenerosChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="cover">
-            URL del Cover
-          </label>
-          <input
-            type="url"
-            id="cover"
-            name="cover"
-            placeholder="URL del cover"
-            value={form.cover}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="imagen">
-            URL de la Imagen
-          </label>
-          <input
-            type="url"
-            id="imagen"
-            name="imagen"
-            placeholder="URL de la imagen"
-            value={form.imagen}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label
-            className="block mb-1 font-semibold"
-            htmlFor="imagenPresentacion"
-          >
-            URL de la Imagen de Presentación
-          </label>
-          <input
-            type="url"
-            id="imagenPresentacion"
-            name="imagenPresentacion"
-            placeholder="URL de la imagen de presentación"
-            value={form.imagenPresentacion}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="trailer">
-            URL del Trailer
-          </label>
-          <input
-            type="url"
-            id="trailer"
-            name="trailer"
-            placeholder="URL del trailer"
-            value={form.trailer}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="puntuacion">
-            Puntuación
-          </label>
-          <input
-            type="number"
-            id="puntuacion"
-            name="puntuacion"
-            placeholder="Puntuación"
-            value={form.puntuacion}
-            min={0}
-            max={5}
-            step={0.1}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="popular"
-            name="popular"
-            checked={form.popular}
-            onChange={handleChange}
-            className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-          />
-          <label htmlFor="popular" className="font-semibold">
-            Popular
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isPending}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition"
+      <div className="h-15" />
+      <div className="flex justify-center items-center px-4 animate-fade-up animate-ease-in-out">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-5xl p-8 bg-zinc-900 rounded-xl shadow-lg space-y-8 text-white"
         >
-          {isPending ? "Creando..." : "Crear Película"}
-        </button>
+          <h2 className="text-4xl font-bold text-center text-red-500">
+            Crear Nueva Película
+          </h2>
 
-        {isError && (
-          <p className="mt-2 text-red-600 font-semibold">
-            {(error as Error).message}
-          </p>
-        )}
-        {isSuccess && (
-          <p className="mt-2 text-green-600 font-semibold">¡Película creada!</p>
-        )}
-      </form>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Left Column */}
+            <section className="space-y-5">
+              {[
+                { id: "titulo", label: "Título", type: "text", required: true },
+                { id: "anio", label: "Año", type: "text", required: true },
+                {
+                  id: "director",
+                  label: "Director",
+                  type: "text",
+                  required: true,
+                },
+                {
+                  id: "duracion",
+                  label: "Duración",
+                  type: "text",
+                  required: true,
+                },
+              ].map(({ id, label, type, required }) => (
+                <div key={id}>
+                  <label
+                    htmlFor={id}
+                    className="block font-semibold text-gray-300 mb-1"
+                  >
+                    {label}
+                  </label>
+                  <input
+                    type={type}
+                    id={id}
+                    name={id}
+                    value={form[id as keyof typeof form] as string}
+                    placeholder={label}
+                    onChange={handleChange}
+                    required={required}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  />
+                </div>
+              ))}
+
+              <div>
+                <label
+                  htmlFor="sinopsis"
+                  className="block font-semibold text-gray-300 mb-1"
+                >
+                  Sinopsis
+                </label>
+                <textarea
+                  id="sinopsis"
+                  name="sinopsis"
+                  value={form.sinopsis}
+                  placeholder="Sinopsis"
+                  onChange={handleChange}
+                  required
+                  rows={5}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 resize-y text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="generos"
+                  className="block font-semibold text-gray-300 mb-1"
+                >
+                  Géneros (separados por coma)
+                </label>
+                <input
+                  type="text"
+                  id="generos"
+                  name="generos"
+                  placeholder="Acción, Comedia, Drama"
+                  value={form.generos.join(", ")}
+                  onChange={handleGenerosChange}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                />
+              </div>
+            </section>
+
+            {/* Right Column */}
+            <section className="space-y-5">
+              {[
+                { id: "cover", label: "URL del Cover" },
+                { id: "imagen", label: "URL de la Imagen" },
+                {
+                  id: "imagenPresentacion",
+                  label: "URL Imagen de Presentación",
+                },
+                { id: "trailer", label: "URL del Trailer" },
+              ].map(({ id, label }) => (
+                <div key={id}>
+                  <label
+                    htmlFor={id}
+                    className="block font-semibold text-gray-300 mb-1"
+                  >
+                    {label}
+                  </label>
+                  <input
+                    type="url"
+                    id={id}
+                    name={id}
+                    value={form[id as keyof typeof form] as string}
+                    placeholder={label}
+                    onChange={handleChange}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  />
+                </div>
+              ))}
+
+              <div>
+                <label
+                  htmlFor="puntuacion"
+                  className="block font-semibold text-gray-300 mb-1"
+                >
+                  Puntuación
+                </label>
+                <input
+                  type="number"
+                  id="puntuacion"
+                  name="puntuacion"
+                  min={0}
+                  max={5}
+                  step={0.1}
+                  value={form.puntuacion}
+                  onChange={handleChange}
+                  placeholder="Puntuación"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                />
+              </div>
+
+              <div className="flex items-center space-x-3 mt-2">
+                <input
+                  type="checkbox"
+                  id="popular"
+                  name="popular"
+                  checked={form.popular}
+                  onChange={handleChange}
+                  className="h-5 w-5 rounded border-zinc-700 text-red-600 focus:ring-red-600"
+                />
+                <label
+                  htmlFor="popular"
+                  className="text-gray-300 font-semibold"
+                >
+                  Popular
+                </label>
+              </div>
+            </section>
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={isPending}
+              className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              {isPending ? "Creando..." : "Crear Película"}
+            </button>
+            {isError && (
+              <p className="mt-3 text-red-400 font-semibold text-center">
+                {(error as Error).message}
+              </p>
+            )}
+            {isSuccess && (
+              <p className="mt-3 text-green-400 font-semibold text-center">
+                ¡Película creada!
+              </p>
+            )}
+          </div>
+        </form>
+      </div>
     </>
   );
 }

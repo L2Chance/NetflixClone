@@ -55,20 +55,23 @@ export default function Navbar({ ocultar = false }: NavbarProps) {
 
       {/* Enlaces de navegación */}
       <section className="flex justify-center items-center gap-6">
-        <Link to="/" className="text-white hover:underline texto-light">
+        <Link to="/" className="text-white hover:underline texto-semibold">
           Inicio
         </Link>
         <Link
           to="/favoritos"
-          className="text-white hover:underline texto-light"
+          className="text-white hover:underline texto-semibold"
         >
           Favoritos
         </Link>
         <Link
           to="/category/todos"
-          className="text-white hover:underline texto-light"
+          className="text-white hover:underline texto-semibold"
         >
           Categorías
+        </Link>
+        <Link to="/crear" className="text-white hover:underline texto-semibold">
+          Nueva Película
         </Link>
       </section>
 
