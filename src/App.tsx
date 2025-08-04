@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Footer from "./components/footer/Footer";
 import PeliculaDetalle from "./pages/PeliculaDetalle";
 import Busqueda from "./pages/Busqueda";
+import CrearPelicula from "./pages/CrearPelicula";
 
 function App() {
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
@@ -31,6 +32,7 @@ function App() {
         <Route path="/favoritos" element={<Favoritos />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/buscar" element={<Busqueda />} />
+        <Route path="/crear" element={<CrearPelicula />} />
       </Routes>
       <Footer />
     </>
