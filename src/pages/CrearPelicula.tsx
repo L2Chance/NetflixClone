@@ -72,19 +72,19 @@ export default function CrearPelicula() {
 
   return (
     <>
-      <div className="h-15" />
-      <div className="flex justify-center items-center px-4 animate-fade-up animate-ease-in-out">
+      <div className="h-14"></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 ">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-5xl p-8 bg-zinc-900 rounded-xl shadow-lg space-y-8 text-white"
+          className="w-full max-w-6xl bg-gray-900 bg-opacity-90 rounded-2xl shadow-2xl p-10 space-y-10 text-white ring-1 ring-red-700"
         >
-          <h2 className="text-4xl font-bold text-center text-red-500">
+          <h1 className="text-4xl font-extrabold tracking-wide text-red-600 text-center mb-8">
             Crear Nueva Película
-          </h2>
+          </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Left Column */}
-            <section className="space-y-5">
+            <section className="space-y-7">
               {[
                 { id: "titulo", label: "Título", type: "text", required: true },
                 { id: "anio", label: "Año", type: "text", required: true },
@@ -104,7 +104,7 @@ export default function CrearPelicula() {
                 <div key={id}>
                   <label
                     htmlFor={id}
-                    className="block font-semibold text-gray-300 mb-1"
+                    className="block font-semibold text-gray-300 mb-2 text-lg"
                   >
                     {label}
                   </label>
@@ -116,7 +116,7 @@ export default function CrearPelicula() {
                     placeholder={label}
                     onChange={handleChange}
                     required={required}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                   />
                 </div>
               ))}
@@ -124,7 +124,7 @@ export default function CrearPelicula() {
               <div>
                 <label
                   htmlFor="sinopsis"
-                  className="block font-semibold text-gray-300 mb-1"
+                  className="block font-semibold text-gray-300 mb-2 text-lg"
                 >
                   Sinopsis
                 </label>
@@ -135,15 +135,15 @@ export default function CrearPelicula() {
                   placeholder="Sinopsis"
                   onChange={handleChange}
                   required
-                  rows={5}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 resize-y text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  rows={6}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-5 py-3 resize-y text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="generos"
-                  className="block font-semibold text-gray-300 mb-1"
+                  className="block font-semibold text-gray-300 mb-2 text-lg"
                 >
                   Géneros (separados por coma)
                 </label>
@@ -154,13 +154,13 @@ export default function CrearPelicula() {
                   placeholder="Acción, Comedia, Drama"
                   value={form.generos.join(", ")}
                   onChange={handleGenerosChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                 />
               </div>
             </section>
 
             {/* Right Column */}
-            <section className="space-y-5">
+            <section className="space-y-7">
               {[
                 { id: "cover", label: "URL del Cover" },
                 { id: "imagen", label: "URL de la Imagen" },
@@ -173,7 +173,7 @@ export default function CrearPelicula() {
                 <div key={id}>
                   <label
                     htmlFor={id}
-                    className="block font-semibold text-gray-300 mb-1"
+                    className="block font-semibold text-gray-300 mb-2 text-lg"
                   >
                     {label}
                   </label>
@@ -184,7 +184,7 @@ export default function CrearPelicula() {
                     value={form[id as keyof typeof form] as string}
                     placeholder={label}
                     onChange={handleChange}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                   />
                 </div>
               ))}
@@ -192,7 +192,7 @@ export default function CrearPelicula() {
               <div>
                 <label
                   htmlFor="puntuacion"
-                  className="block font-semibold text-gray-300 mb-1"
+                  className="block font-semibold text-gray-300 mb-2 text-lg"
                 >
                   Puntuación
                 </label>
@@ -206,22 +206,22 @@ export default function CrearPelicula() {
                   value={form.puntuacion}
                   onChange={handleChange}
                   placeholder="Puntuación"
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                 />
               </div>
 
-              <div className="flex items-center space-x-3 mt-2">
+              <div className="flex items-center space-x-3 mt-3">
                 <input
                   type="checkbox"
                   id="popular"
                   name="popular"
                   checked={form.popular}
                   onChange={handleChange}
-                  className="h-5 w-5 rounded border-zinc-700 text-red-600 focus:ring-red-600"
+                  className="h-6 w-6 rounded border-gray-700 text-red-600 focus:ring-red-600 transition"
                 />
                 <label
                   htmlFor="popular"
-                  className="text-gray-300 font-semibold"
+                  className="text-gray-300 font-semibold text-lg select-none"
                 >
                   Popular
                 </label>
@@ -229,22 +229,22 @@ export default function CrearPelicula() {
             </section>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-6">
             <button
               type="submit"
               disabled={isPending}
-              className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold text-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {isPending ? "Creando..." : "Crear Película"}
             </button>
             {isError && (
-              <p className="mt-3 text-red-400 font-semibold text-center">
+              <p className="mt-5 text-red-400 font-semibold text-center text-lg">
                 {(error as Error).message}
               </p>
             )}
             {isSuccess && (
-              <p className="mt-3 text-green-400 font-semibold text-center">
-                ¡Película creada!
+              <p className="mt-5 text-green-400 font-semibold text-center text-lg">
+                ¡Película creada con éxito!
               </p>
             )}
           </div>

@@ -1,9 +1,8 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import netflixLogo from "../../assets/netflix-logo.svg";
 import fotoPerfil from "../../assets/messi-perfil.jpg";
 import { SearchIcon, NotificationsIcon } from "../../components/Icons";
-import { Link } from "react-router-dom";
 
 type NavbarProps = {
   ocultar?: boolean;
@@ -15,6 +14,7 @@ export default function Navbar({ ocultar = false }: NavbarProps) {
   const [mostrarNotificaciones, setMostrarNotificaciones] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleBuscador = () => setMostrarBuscador((prev) => !prev);
 
@@ -36,6 +36,15 @@ export default function Navbar({ ocultar = false }: NavbarProps) {
     }
   };
 
+  const obtenerFrase = () => {
+    if (location.pathname === "/favoritos") return "Tus favoritos";
+    if (location.pathname === "/crear") return "Nueva Película";
+    if (location.pathname.startsWith("/category")) return "Explorar categorías";
+    if (location.pathname.startsWith("/buscar"))
+      return "Resultados de búsqueda";
+    return "Perez Lautaro Ivan";
+  };
+
   return (
     <div
       className={`
@@ -50,7 +59,7 @@ export default function Navbar({ ocultar = false }: NavbarProps) {
       >
         <img src={netflixLogo} alt="Logo-Netflix" className="w-12 h-12" />
         <p className="text-lg font-family-roboto text-white">|</p>
-        <p className="text-lg texto-light">Perez Lautaro Ivan</p>
+        <p className="text-lg texto-light">{obtenerFrase()}</p>
       </Link>
 
       {/* Enlaces de navegación */}

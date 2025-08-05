@@ -37,11 +37,7 @@ export default function Busqueda() {
   return (
     <>
       <div className="h-15"></div>
-      <div className="min-h-screen bg-black text-white px-6 py-10 animate-fade-up animate-ease-in-out">
-        <h1 className="text-4xl font-extrabold mb-6 tracking-wide">
-          Resultados para: "{query}"
-        </h1>
-
+      <div className="min-h-screen  text-white px-6 py-10 animate-fade-up animate-ease-in-out">
         {isLoading && (
           <div className="flex flex-col items-center justify-center h-200  text-white">
             <svg

@@ -19,7 +19,7 @@ export default function Reproductor() {
   return (
     <div className="min-h-screen  text-white px-4 py-8 flex flex-col items-center">
       <div className="w-full max-w-6xl text-center animate-fade-up">
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-wide">
+        <h1 className="texto-bold text-3xl bg-gradient-to-r from-red-600 via-red-400 to-white bg-clip-text text-transparent uppercase">
           {pelicula.titulo}
         </h1>
 
