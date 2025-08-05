@@ -148,31 +148,9 @@ export default function Home({ terminoBusqueda }: HomeProps) {
   // --- Renderizado de la UI ---
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-200  text-white">
-        <svg
-          className="animate-spin h-12 w-12 text-red-600 mb-4"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          aria-label="Loading spinner"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          ></path>
-        </svg>
-        <p className="text-xl font-semibold tracking-wide">
-          Cargando<span className="animate-pulse">...</span>
-        </p>
+      <div className="flex flex-col items-center justify-center h-screen text-white">
+        <div className="animate-spin h-12 w-12 border-4 border-red-600 rounded-full border-t-transparent mb-4" />
+        <p className="text-xl font-semibold">Cargando...</p>
       </div>
     );
   }
@@ -182,7 +160,7 @@ export default function Home({ terminoBusqueda }: HomeProps) {
   }
 
   return (
-    <div ref={contenedorRef} className="relative animate-fade">
+    <div ref={contenedorRef} className="relative animate-fade mb-2">
       <DescripcionPelicula />
 
       <div className="flex flex-col justify-center gap-10 relative px-2 sm:px-4">
@@ -226,8 +204,11 @@ export default function Home({ terminoBusqueda }: HomeProps) {
               },
             ].map(({ titulo, ref, filtro }) => (
               <div key={titulo}>
-                <h1 className="texto-bold text-lg sm:text-xl ml-1 sm:ml-3">
-                  {titulo}
+                <h1 className="ml-1 sm:ml-3 text-2xl sm:text-2xl font-extrabold text-white mb-2 mt-5 tracking-wide relative inline-block">
+                  <span className="bg-gradient-to-r from-red-600 to-red-400 text-transparent bg-clip-text">
+                    {titulo}
+                  </span>
+                  <span className="block h-1 w-40 bg-red-600 mt-2 mb-2 rounded"></span>
                 </h1>
                 <div className="relative">
                   <ContenedorPeliculas ref={ref}>

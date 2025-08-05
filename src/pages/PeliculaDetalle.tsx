@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import BotonNetflix from "../components/BotonNetflix";
-import { movieService } from "../recursos/service"; // Importa el servicio
-import type { Pelicula } from "../recursos/peliculas"; // Importa la interfaz Pelicula
+import { movieService } from "../recursos/service";
+import type { Pelicula } from "../recursos/peliculas";
+import { favoritosService } from "../recursos/favoritosService";
 
 export default function PeliculaDetalle() {
   const { id } = useParams<{ id: string }>();
@@ -12,11 +13,10 @@ export default function PeliculaDetalle() {
   const [peliculasSimilares, setPeliculasSimilares] = useState<Pelicula[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [imagenCargada, setImagenCargada] = useState(false);
+  const [esFavorita, setEsFavorita] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    setImagenCargada(false); // Reiniciar cuando cambia la película
 
     const fetchPelicula = async () => {
       if (!id) {
@@ -29,8 +29,8 @@ export default function PeliculaDetalle() {
       try {
         const peliculaEncontrada = await movieService.getMovieById(Number(id));
         setPelicula(peliculaEncontrada);
+        setEsFavorita(favoritosService.isFavorite(peliculaEncontrada.id));
 
-        // Obtener y filtrar películas similares después de cargar la principal
         const todasLasPeliculas = await movieService.getAllMovies();
         const similares = todasLasPeliculas
           .filter((p) => p.id !== peliculaEncontrada.id)
@@ -49,31 +49,9 @@ export default function PeliculaDetalle() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-200  text-white">
-        <svg
-          className="animate-spin h-12 w-12 text-red-600 mb-4"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          aria-label="Loading spinner"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          ></path>
-        </svg>
-        <p className="text-xl font-semibold tracking-wide">
-          Cargando<span className="animate-pulse">...</span>
-        </p>
+      <div className="flex flex-col items-center justify-center h-screen text-white">
+        <div className="animate-spin h-12 w-12 border-4 border-red-600 rounded-full border-t-transparent mb-4" />
+        <p className="text-xl font-semibold">Cargando...</p>
       </div>
     );
   }
@@ -82,7 +60,6 @@ export default function PeliculaDetalle() {
     return <div className="p-4 text-center text-red-500 mt-20">{error}</div>;
   }
 
-  // Si pelicula es null después de la carga y sin error, algo salió mal
   if (!pelicula) {
     return (
       <div className="p-4 text-center text-red-500 mt-20">
@@ -91,105 +68,103 @@ export default function PeliculaDetalle() {
     );
   }
 
+  const toggleFavorito = () => {
+    if (pelicula) {
+      if (esFavorita) {
+        favoritosService.remove(pelicula.id);
+        setEsFavorita(false);
+      } else {
+        favoritosService.add(pelicula.id);
+        setEsFavorita(true);
+      }
+    }
+  };
+
   return (
-    <div className="relative w-full min-h-screen bg-black text-white">
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center opacity-30"
-        style={{ backgroundImage: `url(${pelicula.imagenPresentacion})` }}
-      ></div>
+    <>
+      <div className="h-14"></div>
+      <div className="relative w-full min-h-screen bg-black text-white">
+        <div
+          className="relative w-full h-[60vh] sm:h-[80vh] bg-black overflow-hidden"
+          style={{ backgroundImage: `url(${pelicula.imagenPresentacion})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent z-10" />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-10" />
 
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black via-black/60 to-black"></div>
+          <div className="relative z-20 max-w-5xl mx-auto h-full px-4 sm:px-8 py-6 sm:py-10 flex flex-col justify-end gap-4 sm:gap-6">
+            <h1 className="text-2xl sm:text-5xl font-extrabold text-white drop-shadow-lg bg-gradient-to-r from-red-600 via-white to-red-500 bg-clip-text text-transparent uppercase tracking-wide leading-tight">
+              {pelicula.titulo}
+            </h1>
 
-      <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-8 py-20 flex flex-col gap-10 items-center sm:items-start animate-fade-up animate-ease-in-out">
-        {!imagenCargada && (
-          <div className="w-full sm:w-[1000px] h-[560px] bg-neutral-800 rounded shadow-lg animate-pulse" />
-        )}
-
-        <img
-          loading="lazy"
-          src={pelicula.imagenPresentacion}
-          alt={pelicula.titulo}
-          className={`w-full sm:w-[1000px] rounded shadow-lg object-cover transition-opacity duration-300 ${
-            imagenCargada ? "opacity-100" : "opacity-0 absolute -z-10"
-          }`}
-          onLoad={() => setImagenCargada(true)}
-        />
-
-        {imagenCargada && (
-          <>
-            <BotonNetflix
-              onClick={() => navigate(`/pelicula/${pelicula.id}/play`)}
-            >
-              Ver trailer
-            </BotonNetflix>
-
-            <div className="flex-1 w-full animate-fade-up animate-ease-in-out">
-              <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-                {pelicula.titulo}
-              </h1>
-
-              <div className="flex items-center gap-2 text-sm mb-4 flex-wrap">
-                <span className="border border-white rounded px-2 py-0.5">
-                  16+
-                </span>
-                <span className="bg-white text-black font-semibold px-2 py-0.5 rounded">
-                  HD
-                </span>
-                <span className="text-white/70">
-                  {pelicula.duracion ?? "2h 10min"}
-                </span>
-              </div>
-
-              <p className="text-sm sm:text-base mb-4 leading-relaxed">
-                {pelicula.sinopsis}
-              </p>
-
-              <p className="text-sm sm:text-base mb-6">
-                <span className="font-semibold">Géneros:</span>{" "}
-                {pelicula.generos.join(" · ")}
-              </p>
-
-              <div className="mb-10">
-                <h2 className="text-xl font-semibold mb-3">Capturas</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div
-                      key={i}
-                      className="bg-gray-700 h-32 sm:h-40 rounded-lg animate-pulse"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="w-full">
-                <h2 className="text-xl font-semibold mb-3">
-                  Más títulos similares a este
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {peliculasSimilares.map((p) => (
-                    <div
-                      key={p.id}
-                      className="cursor-pointer group"
-                      onClick={() => navigate(`/pelicula/${p.id}`)}
-                    >
-                      <div className="overflow-hidden rounded-lg shadow-lg">
-                        <img
-                          src={p.imagen}
-                          alt={p.titulo}
-                          className="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <p className="mt-2 text-sm text-center text-white opacity-90 group-hover:opacity-100 transition">
-                        {p.titulo}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div className="w-full h-auto max-h-[500px] rounded-lg shadow-lg overflow-hidden flex justify-center items-center ">
+              <img
+                src={pelicula.imagenPresentacion}
+                alt={`Presentación de ${pelicula.titulo}`}
+                className="max-w-full max-h-[500px] object-contain"
+                loading="lazy"
+              />
             </div>
-          </>
-        )}
+
+            <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm flex-wrap text-white animate-fade-down animate-ease-in-out">
+              <span className="bg-white text-black px-2 py-0.5 rounded font-semibold">
+                HD
+              </span>
+              <span className="border border-white px-2 py-0.5 rounded">
+                {pelicula.duracion ?? "2h 10min"}
+              </span>
+              <span className="text-white/70">
+                {pelicula.generos.join(" · ")}
+              </span>
+            </div>
+
+            <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-2xl">
+              {pelicula.sinopsis}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <BotonNetflix
+                onClick={() => navigate(`/pelicula/${pelicula.id}/play`)}
+              >
+                🎬 Ver trailer
+              </BotonNetflix>
+
+              <BotonNetflix onClick={toggleFavorito}>
+                {esFavorita
+                  ? "❤️ Quitar de favoritos"
+                  : "🤍 Agregar a favoritos"}
+              </BotonNetflix>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-8 py-10 sm:py-12 text-white space-y-8">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold mb-4 border-b border-white/20 pb-2">
+              Más títulos similares
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+              {peliculasSimilares.map((p) => (
+                <div
+                  key={p.id}
+                  className="cursor-pointer group"
+                  onClick={() => navigate(`/pelicula/${p.id}`)}
+                >
+                  <div className="overflow-hidden rounded-lg shadow-md">
+                    <img
+                      src={p.imagen}
+                      alt={p.titulo}
+                      className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-center text-white opacity-90 group-hover:opacity-100 transition">
+                    {p.titulo}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

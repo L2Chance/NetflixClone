@@ -22,170 +22,138 @@ export default function Category() {
   const genreLower = genre?.toLowerCase() ?? "todos";
 
   const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pagina, setPagina] = useState(1);
+  const porPagina = 16;
 
-  const [paginaActual, setPaginaActual] = useState(1);
-  const peliculasPorPagina = 10;
-
-  // Resetear a página 1 al cambiar de género
   useEffect(() => {
-    setPaginaActual(1);
+    setPagina(1);
   }, [genre]);
 
-  // Lógica para obtener las películas del servicio
   useEffect(() => {
     const fetchPeliculas = async () => {
       setIsLoading(true);
-      setError(null);
       try {
         const data = await movieService.getAllMovies();
         setPeliculas(data);
-      } catch (err) {
+      } catch {
         setError("No se pudieron cargar las películas.");
-        console.error(err);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchPeliculas();
   }, []);
 
-  // Filtrar películas en el frontend
   const peliculasFiltradas =
     genreLower === "todos"
       ? peliculas
-      : peliculas.filter((pelicula) =>
-          pelicula.generos.some((g) => g.toLowerCase() === genreLower)
+      : peliculas.filter((p) =>
+          p.generos.some((g) => g.toLowerCase() === genreLower)
         );
 
-  // Calcular paginación
-  const totalPaginas = Math.ceil(
-    peliculasFiltradas.length / peliculasPorPagina
-  );
-  const indiceInicial = (paginaActual - 1) * peliculasPorPagina;
-  const indiceFinal = indiceInicial + peliculasPorPagina;
-  const peliculasPaginadas = peliculasFiltradas.slice(
-    indiceInicial,
-    indiceFinal
+  const totalPaginas = Math.ceil(peliculasFiltradas.length / porPagina);
+  const paginaActual = peliculasFiltradas.slice(
+    (pagina - 1) * porPagina,
+    pagina * porPagina
   );
 
-  const cambiarPagina = (nuevaPagina: number) => {
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-      setPaginaActual(nuevaPagina);
-    }
-  };
+  const Paginador = () =>
+    totalPaginas > 1 && (
+      <div className="flex items-center justify-center gap-6 my-10">
+        <button
+          onClick={() => setPagina((prev) => Math.max(1, prev - 1))}
+          disabled={pagina === 1}
+          className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-300 disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
+        >
+          ← Anterior
+        </button>
 
-  const Paginador = () => (
-    <div className="flex justify-center items-center gap-4 my-6">
-      <button
-        onClick={() => cambiarPagina(paginaActual - 1)}
-        disabled={paginaActual === 1}
-        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50"
-      >
-        ← Anterior
-      </button>
-      <span className="text-sm text-gray-300">
-        Página {paginaActual} de {totalPaginas}
-      </span>
-      <button
-        onClick={() => cambiarPagina(paginaActual + 1)}
-        disabled={paginaActual === totalPaginas}
-        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50"
-      >
-        Siguiente →
-      </button>
-    </div>
-  );
+        <span className="text-lg font-medium text-white tracking-wide">
+          Página <span className="font-bold">{pagina}</span> de{" "}
+          <span className="font-bold">{totalPaginas}</span>
+        </span>
 
-  // Renderizado condicional
+        <button
+          onClick={() => setPagina((prev) => Math.min(totalPaginas, prev + 1))}
+          disabled={pagina === totalPaginas}
+          className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-300 disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
+        >
+          Siguiente →
+        </button>
+      </div>
+    );
+
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-200  text-white">
-        <svg
-          className="animate-spin h-12 w-12 text-red-600 mb-4"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          aria-label="Loading spinner"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          ></path>
-        </svg>
-        <p className="text-xl font-semibold tracking-wide">
-          Cargando<span className="animate-pulse">...</span>
-        </p>
+      <div className="flex flex-col items-center justify-center h-screen text-white">
+        <div className="animate-spin h-12 w-12 border-4 border-red-600 rounded-full border-t-transparent mb-4" />
+        <p className="text-xl font-semibold">Cargando...</p>
       </div>
     );
   }
 
   if (error) {
-    return <div className="p-4 text-center text-red-500 mt-20">{error}</div>;
+    return <div className="text-center text-red-500 mt-10">{error}</div>;
   }
 
   return (
     <>
       <div className="h-15"></div>
-      <div className="min-h-screen text-white px-6 py-10 animate-fade-up animate-ease-in-out">
-        <h1 className="text-4xl font-extrabold mb-6 tracking-wide">
-          {genreLower === "todos"
-            ? "Todas las películas"
-            : `Categoría: ${genre}`}
+      <div className="min-h-[800px] px-6 py-10 text-white animate-fade-up animate-ease-in-out">
+        <h1 className="text-3xl font-extrabold tracking-wide mb-8 text-white drop-shadow-md">
+          <span className="bg-gradient-to-r from-red-600 via-red-400 to-white bg-clip-text text-transparent uppercase">
+            {genreLower === "todos"
+              ? "Todas las películas"
+              : `Categoría: ${genre}`}
+          </span>
         </h1>
 
-        <div className="flex w-full">
-          <div className="flex flex-col w-[15%] gap-2 p-4 mb-10 animate-fade-up animate-ease-in-out">
+        <div className="flex gap-6">
+          {/* Botones de género */}
+          <div className="flex flex-col gap-2 w-44">
             {generosDestacados.map((g) => (
               <button
                 key={g}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  g.toLowerCase() === genreLower
-                    ? "bg-red-600 text-white shadow-md"
-                    : "bg-gray-800 hover:bg-red-700 hover:text-white"
-                }`}
                 onClick={() => navigate(`/category/${g.toLowerCase()}`)}
+                className={`py-2 rounded text-sm font-medium transition ${
+                  g.toLowerCase() === genreLower
+                    ? "bg-red-600 text-white"
+                    : "bg-gray-800 hover:bg-red-700"
+                }`}
               >
                 {g}
               </button>
             ))}
           </div>
 
-          <div className="w-[85%]">
-            {genre && peliculasFiltradas.length === 0 && (
-              <div className="text-center text-lg text-gray-400 animate-fade-up animate-ease-in-out">
+          {/* Listado de películas */}
+          <div className="flex-1 animate-fade-up animate-ease-in-out">
+            {peliculasFiltradas.length === 0 ? (
+              <div className="text-center text-gray-400">
                 No se encontraron películas para la categoría "{genre}".
               </div>
+            ) : (
+              <>
+                <div className="flex flex-wrap gap-3 justify-center">
+                  {paginaActual.map((p) => (
+                    <CardListado
+                      key={p.id}
+                      pelicula={{
+                        id: p.id,
+                        titulo: p.titulo,
+                        anio: p.anio,
+                        cover: p.cover,
+                      }}
+                      onClick={() => navigate(`/pelicula/${p.id}`)}
+                    />
+                  ))}
+                </div>
+                <Paginador />
+              </>
             )}
-
-            {peliculasPaginadas.length > 0 && (
-              <div className="flex flex-wrap gap-3 justify-center">
-                {peliculasPaginadas.map((pelicula) => (
-                  <CardListado
-                    key={pelicula.id}
-                    pelicula={{
-                      id: pelicula.id,
-                      titulo: pelicula.titulo,
-                      anio: pelicula.anio,
-                      cover: pelicula.cover,
-                    }}
-                    onClick={() => navigate(`/pelicula/${pelicula.id}`)}
-                  />
-                ))}
-              </div>
-            )}
-
-            {peliculasFiltradas.length > 0 && <Paginador />}
           </div>
         </div>
       </div>

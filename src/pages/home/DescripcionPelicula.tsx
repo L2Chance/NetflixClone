@@ -13,7 +13,7 @@ export default function DescripcionPelicula() {
   const puntuacion = 8.0;
 
   const abrirReproductor = () => {
-    console.log("Reproductor abierto");
+    window.location.href = "/pelicula/1";
   };
 
   return (
@@ -59,7 +59,6 @@ export default function DescripcionPelicula() {
         {/* Botones */}
         <div className="flex flex-wrap gap-4 mt-2">
           <BotonNetflix onClick={abrirReproductor}>Ver ahora ►</BotonNetflix>
-          <BotonNetflix variant="transparent">Todos los episodios</BotonNetflix>
         </div>
       </article>
     </section>
