@@ -4,7 +4,7 @@ import { movieService } from "../recursos/service";
 import type { Pelicula } from "../recursos/peliculas";
 
 export default function CrearPelicula() {
-  const [form, setForm] = useState<Omit<Pelicula, "id">>({
+  const [form, setForm] = useState<Omit<Pelicula, "id" | "popular">>({
     titulo: "",
     anio: "",
     director: "",
@@ -13,7 +13,6 @@ export default function CrearPelicula() {
     generos: [],
     cover: "",
     imagen: "",
-    popular: false,
     puntuacion: 0,
     imagenPresentacion: "",
     trailer: "",
@@ -32,7 +31,6 @@ export default function CrearPelicula() {
         generos: [],
         cover: "",
         imagen: "",
-        popular: false,
         puntuacion: 0,
         imagenPresentacion: "",
         trailer: "",
@@ -43,20 +41,14 @@ export default function CrearPelicula() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
 
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setForm((prev) => ({
-        ...prev,
-        [name]: checked,
-      }));
-    } else {
-      setForm((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    // removed checkbox logic for popular because it's gone
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleGenerosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,8 +58,8 @@ export default function CrearPelicula() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutate(form);
+  e.preventDefault();
+  mutate({ ...form, popular: false }); 
   };
 
   return (
@@ -208,23 +200,6 @@ export default function CrearPelicula() {
                   placeholder="Puntuación"
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                 />
-              </div>
-
-              <div className="flex items-center space-x-3 mt-3">
-                <input
-                  type="checkbox"
-                  id="popular"
-                  name="popular"
-                  checked={form.popular}
-                  onChange={handleChange}
-                  className="h-6 w-6 rounded border-gray-700 text-red-600 focus:ring-red-600 transition"
-                />
-                <label
-                  htmlFor="popular"
-                  className="text-gray-300 font-semibold text-lg select-none"
-                >
-                  Popular
-                </label>
               </div>
             </section>
           </div>
