@@ -1,5 +1,3 @@
-import React from "react";
-
 interface Pelicula {
   id: number;
   titulo: string;
